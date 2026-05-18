@@ -16,12 +16,11 @@ button{font-family:inherit;cursor:pointer;}
 textarea{font-family:inherit;}
 #app{max-width:480px;margin:0 auto;min-height:100vh;}
 .hdr{background:#1B3F8B;position:sticky;top:0;z-index:10;box-shadow:0 4px 16px rgba(27,63,139,.35);}
-.hdr-top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;}
-.logo{background:#F5C800;border-radius:10px;padding:8px 14px;}
-.logo-t{font-size:22px;font-weight:900;color:#1B3F8B;}
-.logo-s{font-size:12px;color:#1B3F8B;opacity:.7;margin-top:1px;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 8px;}
+.logo{background:transparent;padding:0;}
+.logo-t{font-size:24px;font-weight:900;color:#F5C800;letter-spacing:0.5px;}
 .usr-row{display:flex;gap:8px;}
-.usr-btn{padding:10px 18px;border-radius:12px;border:3px solid transparent;transition:all .18s;background:rgba(255,255,255,.18);color:#fff;}
+.usr-btn{width:48px;height:48px;border-radius:14px;border:3px solid transparent;transition:all .18s;background:rgba(255,255,255,.18);color:#fff;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0;}
 .usr-btn.on{transform:scale(1.08);}
 .journey{display:flex;align-items:center;gap:5px;padding:4px 16px 8px;}
 .j-dot{width:36px;height:36px;border-radius:8px;border:3px solid transparent;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#fff;transition:all .18s;background:none;}
@@ -197,13 +196,12 @@ function App(){
         <div class="hdr-top">
           <div class="logo">
             <div class="logo-t">7 Habits</div>
-            <div class="logo-s">ちい & てる の習慣プログラム</div>
           </div>
           <div class="usr-row">
             ${USERS.map(u=>html`
               <button class="usr-btn ${me===u.id?'on':''}" onClick=${()=>sMe(u.id)}
-                style="background:${me===u.id?u.color:'rgba(255,255,255,.18)'};color:${me===u.id?u.tc:'#fff'};border-color:${me===u.id?P.yellow:'transparent'};font-size:18px;font-weight:900;">
-                ${u.name}
+                style="background:${me===u.id?u.color:'rgba(255,255,255,.18)'};color:${me===u.id?u.tc:'#fff'};border-color:${me===u.id?P.yellow:'transparent'};">
+                ${u.name[0]}
               </button>`)}
           </div>
         </div>
