@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="7 Habits">
+<title>7 Habits — ちい &amp; てる</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'M PLUS Rounded 1c','Hiragino Maru Gothic ProN',sans-serif;background:#F8F6F0;-webkit-tap-highlight-color:transparent;overscroll-behavior:none;}
+button{font-family:inherit;cursor:pointer;}
+textarea{font-family:inherit;}
+#app{max-width:480px;margin:0 auto;min-height:100vh;}
+.hdr{background:#1B3F8B;position:sticky;top:0;z-index:10;box-shadow:0 4px 16px rgba(27,63,139,.35);}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;}
+.logo{background:#F5C800;border-radius:10px;padding:8px 14px;}
+.logo-t{font-size:22px;font-weight:900;color:#1B3F8B;}
+.logo-s{font-size:12px;color:#1B3F8B;opacity:.7;margin-top:1px;}
+.usr-row{display:flex;gap:8px;}
+.usr-btn{padding:10px 18px;border-radius:12px;border:3px solid transparent;transition:all .18s;background:rgba(255,255,255,.18);color:#fff;}
+.usr-btn.on{transform:scale(1.08);}
+.journey{display:flex;align-items:center;gap:5px;padding:4px 16px 8px;}
+.j-dot{width:36px;height:36px;border-radius:8px;border:3px solid transparent;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#fff;transition:all .18s;background:none;}
+.j-dot.on{transform:scale(1.15);box-shadow:0 4px 12px rgba(0,0,0,.3);}
+.j-cnt{font-size:13px;color:rgba(255,255,255,.5);margin-left:auto;font-weight:700;}
+.tabs{display:flex;border-top:1px solid rgba(255,255,255,.15);}
+.tab{flex:1;padding:11px 0;background:transparent;border:none;border-bottom:3px solid transparent;color:rgba(255,255,255,.45);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
+.tab.on{color:#F5C800;border-bottom-color:#F5C800;}
+.body{padding:16px 16px 80px;}
+.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.strip{display:flex;gap:7px;margin-bottom:16px;}
+.strip-btn{flex:1;height:58px;border-radius:12px;border:2.5px solid;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;transition:all .18s;}
+.strip-btn.on{transform:translateY(-4px) scale(1.06);}
+.check-item{width:100%;display:flex;align-items:flex-start;gap:14px;padding:14px 12px;border-radius:14px;border:2px solid;margin-bottom:10px;transition:all .15s;text-align:left;}
+.check-circle{width:30px;height:30px;border-radius:50%;border:2.5px solid;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;transition:all .15s;}
+.tag-badge{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:2px 9px;margin-bottom:6px;}
+.streak-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.streak-name{display:flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:20px;min-width:66px;flex-shrink:0;font-size:16px;font-weight:900;}
+.streak-dots{display:flex;gap:4px;flex:1;}
+.streak-dot{flex:1;height:16px;border-radius:4px;transition:background .25s;}
+.step-row{display:flex;gap:6px;margin-bottom:16px;}
+.step-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;transition:all .2s;}
+.week-card{border-radius:16px;padding:16px;margin-bottom:12px;border:2.5px solid;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.toast-el{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1B3F8B;color:#fff;padding:12px 26px;border-radius:30px;font-size:16px;font-weight:800;z-index:100;box-shadow:0 6px 24px rgba(27,63,139,.4);pointer-events:none;white-space:nowrap;}
+.overlay{position:fixed;inset:0;background:rgba(27,63,139,.7);display:flex;align-items:center;justify-content:center;z-index:200;}
+.pop-box{background:#fff;border-radius:22px;max-width:340px;width:90%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.pop-bar{background:#F5C800;padding:22px 24px;text-align:center;font-size:28px;font-weight:900;color:#1B3F8B;}
+.pop-body{padding:28px 28px 20px;}
+.msn-bar{height:10px;background:#E8EDF5;border-radius:5px;overflow:hidden;margin-bottom:4px;}
+.msn-fill{height:100%;background:#7BC87A;border-radius:5px;transition:width .4s;}
+textarea{width:100%;border-radius:14px;padding:14px 16px;font-size:17px;color:#0D1F50;outline:none;resize:vertical;line-height:1.7;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import{html,render,Component,useState,useEffect}from'https://cdnjs.cloudflare.com/ajax/libs/htm/3.1.1/preact/standalone.module.js';
+
+const P={navy:"#1B3F8B",yellow:"#F5C800",skyBlue:"#A8D4F0",coral:"#EE8EAD",green:"#7BC87A",greenPale:"#D8F2D8",white:"#fff",off:"#F8F6F0",grayL:"#E8EDF5",grayM:"#9AAAC0",locked:"#C8D0DC",lockedBg:"#EEF1F6",gold:"#F5C800",goldPale:"#FFFBE8",textDark:"#0D1F50",mintGreen:"#48B888"};
+const USERS=[{id:"chii",name:"ちい",color:P.coral,tc:"#fff"},{id:"teru",name:"てる",color:P.skyBlue,tc:P.navy}];
+
+const H=[
+  {id:1,title:"主体的である",en:"Be Proactive",phase:"私的成功",icon:"①",desc:"刺激と反応の間には「選択の空白」がある。外の環境でなく自分の価値観に基づいて行動する。",levels:[
+    {step:"STEP 1",label:"気づく",items:[{tag:"🧠",text:"「できない」「しなければ」は被害者思考を強める。今日自分がどんな言葉を使ったか意識して観察した"}]},
+    {step:"STEP 2",label:"言葉を変える",items:[{tag:"🧠",text:"「影響の輪」＝自分が変えられること。「関心の輪」＝気になるが変えられないこと。この違いを今日意識した"},{tag:"✋",text:"「できない・しなければ」を「しない・する」に言い換えた場面が1つ以上あった"}]},
+    {step:"STEP 3",label:"反応を選ぶ",items:[{tag:"🧠",text:"忙しい日こそ「刺激→即反応」になりやすい。3秒立ち止まる意識を持った"},{tag:"✋",text:"カッとなりそうな・焦った場面で一呼吸おいてから言葉を選んだ"},{tag:"💭",text:"今日、誰かのせいにしたくなった瞬間があったか。そのときどう行動したか振り返った"}]},
+    {step:"STEP 4",label:"自分への約束",items:[{tag:"✋",text:"今日、自分に約束したことを1つ守った（小さなことでもOK）"},{tag:"✋",text:"職場か家庭で「自分にできること」にフォーカスした具体的な行動を1つとった"},{tag:"💭",text:"影響の輪の外（上司の評価・相手の気分など）にエネルギーを使いすぎた場面はなかったか振り返った"}]},
+    {step:"STEP 5",label:"主体性を広げる",items:[{tag:"🧠",text:"主体性は日常の小さな選択の積み重ね。毎日の習慣がキャラクターをつくる"},{tag:"✋",text:"誰かの愚痴に共感しつつも「では何ができるか」を考えて言葉にした"},{tag:"✋",text:"仕事・家庭どちらかで、問題を誰かのせいにせず自分の行動で改善しようと動いた"},{tag:"💭",text:"今週、主体的に動けた瞬間を1つ思い浮かべ、なぜそれができたか言語化した"}]},
+  ]},
+  {id:2,title:"終わりを思い描くことから始める",en:"Begin with the End in Mind",phase:"私的成功",icon:"②",desc:"すべてのものは二度つくられる。まず頭の中で（知的創造）、次に現実に（物的創造）。",levels:[
+    {step:"STEP 1",label:"ゴールを知る",items:[{tag:"🧠",text:"「人生の終わりにどんな人だったと言われたいか」を1分でいいので頭に浮かべた。それが今日の行動の羅針盤になる"}]},
+    {step:"STEP 2",label:"ミッションに触れる",items:[{tag:"🧠",text:"ミッションステートメントは「自分の憲法」。仕事が忙しいときほど、立ち返る場所として機能する"},{tag:"✋",text:"今日、ミッションステートメント（または大切にしたいことのメモ）を読み返した"}]},
+    {step:"STEP 3",label:"今日をゴールにつなげる",items:[{tag:"✋",text:"今日の行動・判断のうち1つでも「自分のゴールに沿っているか」意識して確認した"},{tag:"✋",text:"各役割を意識して、それぞれに誠実な行動を1つとった"},{tag:"💭",text:"「目の前のタスク」に追われて、本当に大切なことを後回しにした場面がなかったか振り返った"}]},
+    {step:"STEP 4",label:"役割を設計する",items:[{tag:"🧠",text:"役割ごとに理想の姿を持つことで、毎日の行動に優先順位が生まれる"},{tag:"✋",text:"今週担う主な役割を書き出し、それぞれ大切にしたい行動を1つ決めた"},{tag:"💭",text:"忙しさの中で「配偶者としての自分」「仕事人としての自分」をどれだけ意識できたか振り返った"}]},
+    {step:"STEP 5",label:"人生をデザインする",items:[{tag:"🧠",text:"「葬儀で何を言ってほしいか」という問いは人生の優先順位を根本から問い直す力がある"},{tag:"✋",text:"ミッションステートメントを見直し・加筆した（まだなければ草案を書いた）"},{tag:"✋",text:"今日の仕事・家庭での判断を、長期のゴールに基づいて行った場面が1つあった"},{tag:"💭",text:"今週、「終わり」から逆算して動けた場面と流された場面をそれぞれ思い浮かべた"}]},
+  ]},
+  {id:3,title:"最優先事項を優先する",en:"Put First Things First",phase:"私的成功",icon:"③",desc:"重要だが緊急でない「第2領域」に時間を使う。大切なことを中心に据えた生き方へ。",levels:[
+    {step:"STEP 1",label:"第2領域を知る",items:[{tag:"🧠",text:"4つのマトリクス：第1（緊急＋重要）・第2（重要だが緊急でない）・第3（緊急だが重要でない）・第4（どちらでもない）。今日どこに時間を使ったか意識した"}]},
+    {step:"STEP 2",label:"第2領域に時間を作る",items:[{tag:"🧠",text:"第2領域の例：健康管理・関係構築・学習・将来の計画。後回しにし続けると第1領域の危機になる"},{tag:"✋",text:"今日、第2領域（健康・学習・夫婦の会話・将来の計画など）の活動に15分以上時間を使った"}]},
+    {step:"STEP 3",label:"週次スケジュールを使う",items:[{tag:"🧠",text:"週の初めに「大切な行動」を先にブロックする。後から空き時間を探すのではなく、先に守る時間を決める"},{tag:"✋",text:"今週のスケジュールを確認し、第2領域の活動が少なくとも1つカレンダーに入っている"},{tag:"💭",text:"今日、緊急だが重要でない割り込みに振り回された場面を振り返った"}]},
+    {step:"STEP 4",label:"ノーと言う力",items:[{tag:"🧠",text:"大切なことに「イエス」と言うためには、重要でないことに「ノー」と言う必要がある"},{tag:"✋",text:"重要でない依頼・誘い・タスクに対して、はっきりまたは丁寧に断った場面があった"},{tag:"✋",text:"今日、最も重要なタスクを「朝イチ」か「集中できる時間帯」に行った"},{tag:"💭",text:"今日の時間の使い方を振り返り、第2領域に使えた割合はどのくらいか概算した"}]},
+    {step:"STEP 5",label:"優先順位を生き方にする",items:[{tag:"🧠",text:"スケジュール帳は「自分の価値観を実行するツール」として使う"},{tag:"✋",text:"今週の振り返りを行い、第2領域に使えた時間・使えなかった原因を書き出した"},{tag:"✋",text:"来週のスケジュールに、仕事・家庭・健康・夫婦の時間それぞれの第2領域活動を1つずつ入れた"},{tag:"💭",text:"「忙しい」が口癖になっていないか。本当に大切なことに時間を使えているか正直に振り返った"}]},
+  ]},
+  {id:4,title:"Win-Winを考える",en:"Think Win-Win",phase:"公的成功",icon:"④",desc:"互いが満足できる解決策を探す。競争や妥協でなく「共に豊かになれる道」を選ぶ姿勢。",levels:[
+    {step:"STEP 1",label:"6つのパラダイムを知る",items:[{tag:"🧠",text:"Win-Win・Win-Lose・Lose-Win・Lose-Lose・Win・Win-Win or No Deal。自分がどのパラダイムで動きがちか、今日の会話を観察した"}]},
+    {step:"STEP 2",label:"相手のWinを意識する",items:[{tag:"🧠",text:"Win-Winは「やさしさ」ではなく「勇気＋思いやり」の組み合わせ。自分の利益も相手の利益も両方大切にする"},{tag:"✋",text:"誰かと話す際、「相手にとってのメリット・大切なこと」を意識して会話した"}]},
+    {step:"STEP 3",label:"協力の姿勢をとる",items:[{tag:"🧠",text:"忙しいときほど「ともに解決する」視点が薄れる"},{tag:"✋",text:"意見が違う場面で、競争・論破ではなく「一緒に考える」姿勢で話し合いに臨んだ"},{tag:"💭",text:"今日の人間関係の場面を振り返り、Win-WinかWin-Loseかどちらに近かったか確認した"}]},
+    {step:"STEP 4",label:"アグリーメントを作る",items:[{tag:"🧠",text:"Win-Winアグリーメントとは、期待する結果・ガイドライン・リソース・アカウンタビリティを事前に合意すること"},{tag:"✋",text:"家庭か職場で、役割・期待・ルールを相手と話し合い、お互いが納得できる形で確認した"},{tag:"✋",text:"誰かとの約束・合意を誠実に守った"},{tag:"💭",text:"「相手に我慢させていないか」「自分だけ我慢していないか」今日の関係性を正直に振り返った"}]},
+    {step:"STEP 5",label:"Win-Winを習慣にする",items:[{tag:"🧠",text:"Win-Winは豊かさマインドから生まれる。「成功は限られたパイ」ではなく「ともに大きくできる」という信念"},{tag:"✋",text:"Win-Winにならないと判断した場面で、合意しない（No Deal）という選択を意識的にとった"},{tag:"✋",text:"夫婦・職場・友人のどこかで、相手のWinのために自分から動いた行動が1つあった"},{tag:"💭",text:"今週の人間関係を振り返り、Win-Winを実現できた・できなかった場面を書き出した"}]},
+  ]},
+  {id:5,title:"まず理解に徹し、そして理解される",en:"Seek First to Understand",phase:"公的成功",icon:"⑤",desc:"診断する前に処方するな。相手を本当に理解してから自分を理解してもらう。",levels:[
+    {step:"STEP 1",label:"自叙伝的反応に気づく",items:[{tag:"🧠",text:"人は無意識に「評価・詮索・アドバイス・解釈」を返しがち（自叙伝的反応）。今日、自分がこれをしていないか観察した"}]},
+    {step:"STEP 2",label:"最後まで聞く",items:[{tag:"🧠",text:"共感的傾聴とは「相手を理解するために聞く」こと。仕事終わりの疲れた時間帯こそ試される"},{tag:"✋",text:"誰かの話を、途中でアドバイスせず最後まで聞いた"}]},
+    {step:"STEP 3",label:"言い換えて確認する",items:[{tag:"🧠",text:"共感的傾聴の4段階：①言葉をそのまま返す→②言い換える→③気持ちを反映する→④言葉＋気持ちを返す"},{tag:"✋",text:"相手の話を自分の言葉で言い換えて「〜ということですか？」と確認した場面があった"},{tag:"💭",text:"今日の会話で「もっと聞けばよかった」と感じた場面を振り返り、次回どうするか考えた"}]},
+    {step:"STEP 4",label:"気持ちに寄り添う",items:[{tag:"🧠",text:"人は「正しいアドバイス」より「わかってもらえた」と感じることを先に求めている。夫婦間では共感が関係の質を変える"},{tag:"✋",text:"相手の感情を言葉で確認した（「大変だったんだね」など）"},{tag:"✋",text:"アドバイスより先に、相手が「わかってもらえた」と感じるまで聞き続けた"},{tag:"💭",text:"今日、自分が「理解してほしい」と感じた場面はあったか振り返った"}]},
+    {step:"STEP 5",label:"理解し、理解される関係へ",items:[{tag:"🧠",text:"「まず理解する」が習慣になると、相手も自然とこちらの話を聞こうとする。夫婦・職場の信頼貯金が積み上がる"},{tag:"✋",text:"共感的に聞いた後で、自分の考えや気持ちも率直に・穏やかに伝えた"},{tag:"✋",text:"普段あまり深く話せていない相手との会話で、意識的に傾聴を実践した"},{tag:"💭",text:"今週の人間関係で、傾聴によって関係が深まった・空気が変わった瞬間があったか振り返った"}]},
+  ]},
+  {id:6,title:"シナジーを創り出す",en:"Synergize",phase:"公的成功",icon:"⑥",desc:"全体は部分の総和以上になる。違いを強みとして、自分一人では到達できない結果を生む。",levels:[
+    {step:"STEP 1",label:"違いに気づく",items:[{tag:"🧠",text:"シナジーは「違い」から生まれる。今日、自分と違う意見・視点に出会った場面を観察した"}]},
+    {step:"STEP 2",label:"違いを受け取る",items:[{tag:"🧠",text:"「自分と違う＝学べる何かがある」という姿勢に切り替えると会話の質が変わる"},{tag:"✋",text:"自分と違う意見・アプローチに触れたとき、否定せずに「なるほど」と受け取った"}]},
+    {step:"STEP 3",label:"第3の案を探す",items:[{tag:"🧠",text:"第3の案とは「私の案でも、あなたの案でもない、ともに生み出す新しい解決策」"},{tag:"✋",text:"意見の違いがある場面で「もっと良い第3の案はないか」と問いかけた"},{tag:"💭",text:"今日、妥協や多数決で終わった場面で、第3の案を探していたらどうなったか考えた"}]},
+    {step:"STEP 4",label:"違いを活かして協力する",items:[{tag:"🧠",text:"シナジーが起きるには「安心して違いを出せる関係性」が必要。習慣4・5を実践してきた土台の上に生まれる"},{tag:"✋",text:"相手の強み・得意・視点を活かして、自分一人ではできなかったことを一緒に実現した場面があった"},{tag:"✋",text:"「私がやる・あなたがやる」の分担から「一緒に考えてより良くする」に切り替えた場面があった"},{tag:"💭",text:"今日の協力場面で、お互いの違いが「プラスに働いた」と感じた瞬間があったか振り返った"}]},
+    {step:"STEP 5",label:"シナジーを根付かせる",items:[{tag:"🧠",text:"シナジーが起きているとき「自分だけでは絶対ここに来られなかった」と感じる。その体験が違いへの開放性をさらに高める"},{tag:"✋",text:"今日、1＋1が2以上になる場面を意識的につくった"},{tag:"✋",text:"自分が「正しい」と思っていた方法を手放し、相手のやり方を試してみた場面があった"},{tag:"💭",text:"今週、シナジーが生まれた瞬間を振り返り、何が「違い」を活かせた要因だったか言語化した"}]},
+  ]},
+  {id:7,title:"刃を研ぐ",en:"Sharpen the Saw",phase:"刃を研ぐ",icon:"⑦",desc:"4つの側面（肉体・精神・知性・社会情緒）を継続的に更新・強化する。自分が最も重要な資産。",levels:[
+    {step:"STEP 1",label:"4領域を知る",items:[{tag:"🧠",text:"刃を研ぐ4領域：①肉体（運動・睡眠・栄養）②精神（価値観・内省）③知性（読書・学習）④社会情緒（人間関係・共感・貢献）。今どの領域がおろそかになっているか意識した"}]},
+    {step:"STEP 2",label:"肉体を整える",items:[{tag:"🧠",text:"肉体は他の6つの習慣を実践するための土台。睡眠不足・運動不足は判断力・感情コントロール・創造性すべてに影響する"},{tag:"✋",text:"【肉体】今日、運動・十分な睡眠・栄養バランスのどれか1つを意識して実行した"}]},
+    {step:"STEP 3",label:"精神を養う",items:[{tag:"🧠",text:"精神的刷新とは、自分の価値観・ミッションとつながり直すこと。忙しい毎日に「静かな時間」を意図的につくる"},{tag:"✋",text:"【肉体】今日、体を動かした・よく眠れた・食事を整えた"},{tag:"✋",text:"【精神】瞑想・祈り・自然の中での散歩・音楽・芸術鑑賞など、心が静まる時間を10分以上とった"},{tag:"💭",text:"今日「立ち止まって自分を取り戻せた」と感じる瞬間があったか振り返った"}]},
+    {step:"STEP 4",label:"知性・社会情緒を育む",items:[{tag:"🧠",text:"知性の刷新は読書・書くこと・学ぶことから。社会情緒的刷新は人への貢献・共感・深いつながりから生まれる"},{tag:"✋",text:"【肉体】体を大切に扱えた"},{tag:"✋",text:"【精神】心が静まる時間をとった"},{tag:"✋",text:"【知性】本・記事・ポッドキャストなど学びになるものに15分以上触れた"},{tag:"✋",text:"【社会情緒】誰かに感謝した・話を聞いた・助けた・一緒に笑った"}]},
+    {step:"STEP 5",label:"4領域を毎日回す",items:[{tag:"🧠",text:"刃を研ぐことは「毎日の習慣」。1日の中で4領域すべてに少しずつ時間を使うことが長期的な幸福感を生む"},{tag:"✋",text:"【肉体】今日、体を大切に扱えた"},{tag:"✋",text:"【精神】自分の内側と向き合う時間をとった"},{tag:"✋",text:"【知性】何か新しいことを学んだ・書いた・考えを深めた"},{tag:"✋",text:"【社会情緒】誰かとのつながりを大切にする行動を1つとった"},{tag:"💭",text:"今週の4領域バランスを振り返り、特に弱かった領域と来週取り組みたいことを書き出した"}]},
+  ]},
+];
+
+const MQ=[
+  {id:"role_model",sec:"大切な人から学ぶ",q:"あなたが心から尊敬する人は誰ですか？\nその人のどんなところが好きですか？",hint:"実在の人でも架空の人でも。その人の「どんな姿」に憧れるか書いてみてください。",ph:"例：祖母。どんなときも穏やかで、会うと自分が大切にされていると感じた。"},
+  {id:"peak",sec:"自分の輝いた瞬間",q:"これまでの人生で「これが自分だ」と感じた瞬間はいつでしたか？",hint:"仕事・家庭・趣味・どんな場面でもOK。「自分らしくいられた」と感じた記憶を。",ph:"例：チームで難しいプロジェクトをやり遂げたとき。みんなの力が合わさる瞬間が好き。"},
+  {id:"values",sec:"譲れない価値観",q:"どんな状況でも、絶対に大切にしたいことは何ですか？\n3つ以内で教えてください。",hint:"「正直さ」「家族との時間」「成長し続けること」など。自分の言葉でOKです。",ph:"例：誠実であること、家族の笑顔、好奇心を忘れないこと。"},
+  {id:"roles",sec:"あなたが担う役割",q:"今のあなたが大切にしたい「役割」を書いてください。\n（配偶者・仕事人・親・自分自身など）",hint:"それぞれの役割で、どんな人でありたいかひと言ずつ添えると深まります。",ph:"例：配偶者として→てるの一番の理解者でいたい。仕事人として→誠実に楽しんで取り組む人。"},
+  {id:"contribution",sec:"世界への貢献",q:"あなたの存在が、周りの人や社会にどんな影響を与えたいですか？",hint:"大きなことでなくて大丈夫。「家族が安心できる場所になりたい」でも十分です。",ph:"例：一緒にいる人が、自分を好きになれるような関わりをしたい。"},
+  {id:"funeral",sec:"人生の終わりから考える",q:"人生の最後に、大切な人たちにどんな言葉をかけてもらいたいですか？",hint:"コビー博士が勧める「葬儀の場面」を想像する問いです。人生の羅針盤になります。",ph:"例：「あの人といると、自分のままでいられた」と言ってほしい。"},
+  {id:"free",sec:"自由記述",q:"ここまでの答えを読み返して、あなたの人生で本当に大切なことを\n自分の言葉でまとめてみてください。",hint:"完璧じゃなくていい。今の自分の言葉で書いた「草案」がミッションステートメントです。何度でも書き直せます。",ph:"例：私は誠実さと好奇心を大切に、家族が安心できる場所であり続ける。仕事では人の力を引き出し、ともに成長することを喜びとする。"},
+];
+
+// ── helpers ──────────────────────────────────────────────────────────────────
+function ds(o=0){const d=new Date();d.setDate(d.getDate()+o);return d.toISOString().split("T")[0];}
+function wk(){const d=new Date(),day=d.getDay(),m=new Date(d);m.setDate(d.getDate()-day+(day===0?-6:1));return m.toISOString().split("T")[0];}
+function fd(ts){return new Date(ts).toLocaleDateString("ja-JP",{month:"long",day:"numeric"});}
+function dayDone(ch,u,h,lv,dk){const its=H.find(x=>x.id===h)?.levels[lv]?.items||[];return its.length>0&&its.every((_,i)=>!!ch[`${u}_${dk}_${h}_${lv}_${i}`]);}
+function calcStreak(ch,u,h,lv){let s=0;for(let d=0;d<30;d++){if(dayDone(ch,u,h,lv,ds(-d)))s++;else break;}return s;}
+function getLevel(p,u,h){return p[`${u}_${h}_level`]??0;}
+function isUnlocked(p,h){return h===1||p[`both_${h-1}_complete`]===true;}
+function ld(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+
+// ── main app ─────────────────────────────────────────────────────────────────
+function App(){
+  const [tab,sTab]=useState("today");
+  const [me,sMe]=useState("chii");
+  const [ah,sAh]=useState(1);
+  const [ch,sCh]=useState(()=>ld("y7c")||{});
+  const [pr,sPr]=useState(()=>ld("y7p")||{});
+  const [ins,sIns]=useState(()=>ld("y7i")||{});
+  const [msn,sMsn]=useState(()=>ld("y7m")||{});
+  const [mqi,sMqi]=useState(0);
+  const [md,sMd]=useState("");
+  const [draft,sDraft]=useState("");
+  const [toast,sToast]=useState(null);
+  const [pop,sPop]=useState(null);
+  const today=ds(0),wkey=wk();
+
+  const saveCh=n=>{sCh(n);sv("y7c",n);};
+  const savePr=n=>{sPr(n);sv("y7p",n);};
+  const saveIns=n=>{sIns(n);sv("y7i",n);};
+  const saveMsn=n=>{sMsn(n);sv("y7m",n);};
+  const showToast=(m,d=2600)=>{sToast(m);setTimeout(()=>sToast(null),d);};
+
+  const toggle=(hid,lv,idx)=>{
+    const k=`${me}_${today}_${hid}_${lv}_${idx}`;
+    const nx={...ch,[k]:!ch[k]};saveCh(nx);
+    const its=H.find(x=>x.id===hid).levels[lv].items;
+    if(!its.every((_,i)=>!!nx[`${me}_${today}_${hid}_${lv}_${i}`]))return;
+    const s=calcStreak(nx,me,hid,lv);
+    if(s>=7)advance(nx,hid,lv);else showToast(`${s}日連続！あと${7-s}日`);
+  };
+
+  const advance=(cur,hid,lv)=>{
+    const hab=H.find(x=>x.id===hid),max=hab.levels.length-1,nx={...pr},pt=USERS.find(u=>u.id!==me);
+    if(lv<max){nx[`${me}_${hid}_level`]=lv+1;savePr(nx);showToast(`${hab.levels[lv+1].step}に進んだ！`);}
+    else{
+      nx[`${me}_${hid}_complete`]=true;
+      if(nx[`${pt.id}_${hid}_complete`]){nx[`both_${hid}_complete`]=true;savePr(nx);if(hid<7)sPop(hid+1);else showToast("全7習慣コンプリート！！");}
+      else{savePr(nx);showToast(`習慣${hid}クリア！${pt.name}さんを待っています`);}
+    }
+  };
+
+  const isCh=(hid,lv,idx)=>!!ch[`${me}_${today}_${hid}_${lv}_${idx}`];
+  const postIns=()=>{if(!draft.trim())return;const k=`${me}_${wkey}`;saveIns({...ins,[k]:[...(ins[k]||[]),{text:draft.trim(),ts:Date.now()}]});sDraft("");showToast("投稿しました");};
+
+  const hab=H.find(x=>x.id===ah);
+  const meU=USERS.find(u=>u.id===me),pt=USERS.find(u=>u.id!==me);
+  const isUn=isUnlocked(pr,ah),lv=getLevel(pr,me,ah),sk=calcStreak(ch,me,ah,lv);
+  const myDn=pr[`${me}_${ah}_complete`]===true,btDn=pr[`both_${ah}_complete`]===true;
+  const its=isUn?(hab.levels[lv]?.items||[]):[];
+  const tdDn=its.length>0&&its.every((_,i)=>isCh(ah,lv,i));
+  const clr=H.filter(x=>pr[`both_${x.id}_complete`]).length;
+
+  const tagInfo=(tag)=>tag==="🧠"?{bg:"#E8F0FC",col:P.navy,lbl:"🧠 理解"}:tag==="✋"?{bg:P.greenPale,col:"#2E7A2E",lbl:"✋ 行動"}:{bg:"#FFF3E8",col:"#A05A00",lbl:"💭 振り返り"};
+
+  return html`
+    <div>
+      <!-- HEADER -->
+      <div class="hdr">
+        <div class="hdr-top">
+          <div class="logo">
+            <div class="logo-t">7 Habits</div>
+            <div class="logo-s">ちい & てる の習慣プログラム</div>
+          </div>
+          <div class="usr-row">
+            ${USERS.map(u=>html`
+              <button class="usr-btn ${me===u.id?'on':''}" onClick=${()=>sMe(u.id)}
+                style="background:${me===u.id?u.color:'rgba(255,255,255,.18)'};color:${me===u.id?u.tc:'#fff'};border-color:${me===u.id?P.yellow:'transparent'};font-size:18px;font-weight:900;">
+                ${u.name}
+              </button>`)}
+          </div>
+        </div>
+        <!-- Journey dots -->
+        <div class="journey">
+          ${H.map(x=>{const un=isUnlocked(pr,x.id),bt=pr[`both_${x.id}_complete`],on=ah===x.id;return html`
+            <button class="j-dot ${on?'on':''}" onClick=${()=>{sAh(x.id);sTab("today");}}
+              style="background:${bt?P.yellow:un?'rgba(255,255,255,.25)':'rgba(255,255,255,.08)'};border-color:${on?'#fff':'transparent'};">
+              ${bt?'✓':un?x.id:'🔒'}
+            </button>`;})}
+          <span class="j-cnt">${clr}/7</span>
+        </div>
+        <!-- Tabs -->
+        <div class="tabs">
+          ${[["today","今日"],["weekly","週次"],["share","ふたりで"],["mission","ミッション"]].map(([id,lbl])=>html`
+            <button class="tab ${tab===id?'on':''}" onClick=${()=>sTab(id)}>${lbl}</button>`)}
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="body">
+
+        <!-- TODAY -->
+        ${tab==="today"&&html`<div>
+          <!-- strip -->
+          <div class="strip">
+            ${H.map(x=>{const un=isUnlocked(pr,x.id),on=ah===x.id,bt=pr[`both_${x.id}_complete`];return html`
+              <button class="strip-btn ${on?'on':''}" onClick=${()=>sAh(x.id)}
+                style="background:${on?P.green:bt?P.yellow:un?P.greenPale:P.lockedBg};border-color:${on?P.green:bt?P.yellow:un?P.green:P.locked};color:${on?'#fff':bt?P.navy:un?P.navy:P.locked};box-shadow:${on?`0 8px 20px ${P.green}55`:'none'};">
+                ${bt?'✓':x.id}
+              </button>`;})}
+          </div>
+
+          <!-- habit card -->
+          <div class="card" style="background:${isUn?P.greenPale:P.lockedBg};border:2.5px solid ${isUn?P.green:P.locked};">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+              <span style="display:inline-block;color:#fff;font-size:13px;font-weight:800;padding:4px 14px;border-radius:20px;background:${isUn?P.green:P.locked};">${hab.phase}</span>
+              ${btDn&&html`<span style="font-size:13px;font-weight:800;padding:4px 12px;border-radius:20px;background:${P.mintGreen}22;color:${P.mintGreen};">クリア済み</span>`}
+              ${!isUn&&html`<span style="font-size:13px;font-weight:800;padding:4px 12px;border-radius:20px;background:${P.locked};color:#fff;">ロック中</span>`}
+              ${isUn&&myDn&&!btDn&&html`<span style="font-size:13px;font-weight:800;padding:4px 12px;border-radius:20px;background:${P.goldPale};color:#C89800;">待機中</span>`}
+            </div>
+            <div style="font-size:40px;line-height:1;margin-bottom:4px;color:${P.navy};">${hab.icon}</div>
+            <div style="font-size:22px;font-weight:900;color:${P.textDark};line-height:1.4;margin-bottom:4px;">${hab.title}</div>
+            <div style="font-size:14px;color:${P.grayM};letter-spacing:.5px;margin-bottom:10px;">${hab.en}</div>
+            <div style="font-size:16px;color:#4A5568;line-height:1.75;padding-top:10px;border-top:1.5px solid rgba(0,0,0,.07);">${hab.desc}</div>
+          </div>
+
+          <!-- locked -->
+          ${!isUn&&html`<div style="text-align:center;padding:34px 20px;background:${P.lockedBg};border-radius:18px;margin-bottom:14px;border:2px dashed ${P.locked};">
+            <div style="font-size:50px;">🔒</div>
+            <div style="font-size:22px;font-weight:900;color:${P.grayM};margin:10px 0 6px;">まだロック中</div>
+            <div style="font-size:17px;color:${P.grayM};line-height:1.7;">習慣${ah-1}をふたりでクリアすると解放されます！</div>
+          </div>`}
+
+          <!-- active -->
+          ${isUn&&!btDn&&!myDn&&html`<div>
+            <!-- step card -->
+            <div class="card">
+              <div class="step-row">
+                ${hab.levels.map((lx,i)=>html`
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="step-dot" style="background:${i<=lv?P.green:P.grayL};border:${i===lv?`3px solid ${P.green}`:'3px solid transparent'};box-shadow:${i===lv?`0 0 0 5px ${P.greenPale}`:'none'};">
+                      ${i<lv?'✓':i+1}
+                    </div>
+                    <span style="font-size:11px;font-weight:700;color:${i<=lv?P.green:P.grayM};">${lx.step}</span>
+                    <span style="font-size:10px;color:${i===lv?P.green:P.grayM};text-align:center;line-height:1.3;">${lx.label}</span>
+                  </div>`)}
+              </div>
+              ${USERS.map(u=>{const ul=getLevel(pr,u.id,ah),us=calcStreak(ch,u.id,ah,ul),ud=pr[`${u.id}_${ah}_complete`];return html`
+                <div class="streak-bar">
+                  <div class="streak-name" style="background:${u.color};color:${u.tc};">${u.name}</div>
+                  <div class="streak-dots">
+                    ${[...Array(7)].map((_,d)=>html`<div class="streak-dot" style="background:${ud?P.green:d<us?P.green:P.grayL};"></div>`)}
+                  </div>
+                  <span style="font-size:16px;font-weight:900;min-width:52px;text-align:right;color:${ud?P.green:P.navy};">${ud?'完了！':`${us}/7`}</span>
+                </div>`;})}
+            </div>
+            <!-- check card -->
+            <div class="card" style="border:2.5px solid ${P.green};">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <div>
+                  <span style="font-size:19px;font-weight:900;color:${P.navy};">今日のチェック</span>
+                  <span style="font-size:14px;color:${P.green};font-weight:700;margin-left:8px;">${hab.levels[lv]?.label}</span>
+                </div>
+                <span style="font-size:16px;font-weight:900;color:#fff;padding:4px 14px;border-radius:20px;background:${P.green};">${its.filter((_,i)=>isCh(ah,lv,i)).length}/${its.length}</span>
+              </div>
+              ${its.map((item,i)=>{
+                const dn=isCh(ah,lv,i),txt=typeof item==='string'?item:item.text,tg=typeof item==='string'?null:item.tag,ti=tg?tagInfo(tg):null;
+                return html`
+                  <button class="check-item" onClick=${()=>toggle(ah,lv,i)}
+                    style="background:${dn?P.greenPale:P.white};border-color:${dn?P.green:P.grayL};">
+                    <div class="check-circle" style="background:${dn?P.green:'transparent'};border-color:${dn?P.green:P.grayM};">${dn?'✓':''}</div>
+                    <div style="flex:1;text-align:left;">
+                      ${tg&&html`<span class="tag-badge" style="background:${ti.bg};color:${ti.col};">${ti.lbl}</span>`}
+                      <div style="font-size:17px;color:${dn?P.textDark:'#444'};line-height:1.7;font-weight:${dn?700:400};">${txt}</div>
+                    </div>
+                  </button>`;})}
+              ${tdDn&&html`<div style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;margin-top:10px;background:${P.green};">
+                <span style="font-size:20px;font-weight:900;color:#fff;">${sk}日連続！あと${Math.max(0,7-sk)}日でレベルアップ</span>
+              </div>`}
+            </div>
+          </div>`}
+
+          <!-- waiting -->
+          ${isUn&&myDn&&!btDn&&html`<div style="text-align:center;padding:32px 20px;border-radius:18px;margin-bottom:14px;background:${P.goldPale};border:2.5px solid ${P.gold};">
+            <div style="font-size:24px;font-weight:900;color:${P.navy};margin-bottom:8px;">${meU.name}さんはクリア！</div>
+            <div style="font-size:17px;color:${P.navy};line-height:1.7;">${pt.name}さんのクリアを待っています。一緒に突破しよう！</div>
+          </div>`}
+
+          <!-- both done -->
+          ${isUn&&btDn&&html`<div style="text-align:center;padding:36px 20px;border-radius:18px;margin-bottom:14px;background:${P.greenPale};border:2px solid ${P.green}66;">
+            <div style="font-size:60px;">🎉</div>
+            <div style="font-size:26px;font-weight:900;color:${P.navy};margin:8px 0 6px;">ふたりでクリア！</div>
+            <div style="font-size:18px;color:${P.navy};line-height:1.7;margin-bottom:14px;">「${hab.title}」が身につきました！</div>
+            ${ah<7&&html`<button onClick=${()=>sAh(ah+1)} style="padding:14px 28px;color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:900;background:${P.green};">習慣${ah+1}へ進む →</button>`}
+            ${ah===7&&html`<div style="font-size:22px;font-weight:900;color:${P.coral};">全習慣マスター！！</div>`}
+          </div>`}
+        </div>`}
+
+        <!-- WEEKLY -->
+        ${tab==="weekly"&&html`<div>
+          <div style="font-size:26px;font-weight:900;color:${P.navy};margin-bottom:4px;">週次レビュー</div>
+          <div style="font-size:16px;color:${P.grayM};margin-bottom:18px;">7日連続チェックで次のステップへ！</div>
+          ${H.map(x=>{const un=isUnlocked(pr,x.id),bt=pr[`both_${x.id}_complete`];return html`
+            <div class="week-card" style="background:${bt?P.greenPale:un?P.white:P.lockedBg};border-color:${bt?P.green:un?P.green:P.locked};opacity:${un?1:.55};">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:${un&&!bt?'12px':'0'};">
+                <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:${bt?P.yellow:un?P.green:P.locked};font-weight:900;color:${bt?P.navy:'#fff'};font-size:17px;">${bt?'✓':x.id}</div>
+                <div style="flex:1;">
+                  <div style="font-size:18px;font-weight:800;color:${un?P.navy:P.locked};line-height:1.4;">${x.title}</div>
+                  ${bt&&html`<div style="font-size:14px;color:${P.green};font-weight:700;margin-top:2px;">クリア済み</div>`}
+                </div>
+              </div>
+              ${un&&!bt&&USERS.map(u=>{const ul=getLevel(pr,u.id,x.id),us=calcStreak(ch,u.id,x.id,ul),ud=pr[`${u.id}_${x.id}_complete`];return html`
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                  <div style="display:flex;align-items:center;justify-content:center;padding:5px 12px;border-radius:20px;flex-shrink:0;min-width:60px;background:${u.color};font-size:15px;font-weight:900;color:${u.tc};">${u.name}</div>
+                  <div style="display:flex;gap:3px;flex:1;">${[...Array(7)].map((_,d)=>html`<div style="flex:1;height:14px;border-radius:3px;background:${ud?P.green:d<us?P.green:P.grayL};"></div>`)}</div>
+                  <span style="font-size:16px;font-weight:900;min-width:52px;text-align:right;color:${ud?P.green:P.navy};">${ud?'完了！':`${us}/7`}</span>
+                </div>`;})}
+            </div>`;})}
+          <div style="display:flex;align-items:flex-start;gap:14px;background:#FEFBE8;border-radius:16px;padding:18px 20px;margin-top:8px;border:2px solid ${P.yellow};">
+            <span style="font-size:28px;">💡</span>
+            <div style="font-size:17px;color:${P.navy};line-height:1.8;">ふたりとも<strong>7日連続</strong>チェックで次の習慣が解放されます。段階的に項目が増えていくので無理なく習慣が身につきます！</div>
+          </div>
+        </div>`}
+
+        <!-- SHARE -->
+        ${tab==="share"&&html`<div>
+          <div style="font-size:26px;font-weight:900;color:${P.navy};margin-bottom:4px;">ふたりの記録</div>
+          <div style="font-size:16px;color:${P.grayM};margin-bottom:18px;">今週の気づきをシェアしよう</div>
+          <div class="card">
+            <div style="font-size:18px;font-weight:900;color:${P.navy};margin-bottom:14px;">ジャーニー進捗</div>
+            <div style="display:flex;gap:7px;">
+              ${H.map(x=>{const bt=pr[`both_${x.id}_complete`],un=isUnlocked(pr,x.id);return html`
+                <div style="flex:1;text-align:center;">
+                  <div style="width:100%;aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${bt?P.yellow:un?P.greenPale:P.lockedBg};border:2.5px solid ${bt?P.yellow:un?P.green:P.locked};font-size:18px;font-weight:900;color:${bt?P.navy:un?P.navy:P.locked};">${bt?'✓':un?x.id:'🔒'}</div>
+                  <div style="display:flex;justify-content:center;gap:2px;margin-top:4px;">
+                    ${USERS.map(u=>html`<div style="width:7px;height:7px;border-radius:50%;background:${pr[`${u.id}_${x.id}_complete`]?P.green:P.grayL};"></div>`)}
+                  </div>
+                </div>`;})}
+            </div>
+            <div style="display:flex;gap:10px;margin-top:14px;">
+              ${USERS.map(u=>{const cnt=H.filter(x=>pr[`${u.id}_${x.id}_complete`]).length;return html`
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 14px;border-radius:14px;flex:1;background:${u.color};">
+                  <span style="font-size:18px;font-weight:900;color:${u.tc};">${u.name}</span>
+                  <span style="font-size:16px;font-weight:700;color:${u.tc};opacity:.8;">${cnt}/7 クリア</span>
+                </div>`;})}
+            </div>
+          </div>
+          <div class="card">
+            <div style="display:inline-flex;align-items:center;justify-content:center;padding:7px 16px;border-radius:20px;margin-bottom:12px;background:${meU.color};">
+              <span style="font-size:17px;font-weight:900;color:${meU.tc};">${meU.name}として投稿</span>
+            </div>
+            <textarea value=${draft} onInput=${e=>sDraft(e.target.value)} placeholder="今週の気づき・うまくいったこと・難しかったこと..." style="border:2px solid ${P.grayL};min-height:100px;"></textarea>
+            <button onClick=${postIns} style="margin-top:12px;width:100%;padding:14px;color:${meU.tc};border:none;border-radius:14px;font-size:18px;font-weight:900;background:${meU.color};">シェアする</button>
+          </div>
+          ${USERS.map(u=>{const posts=[...(ins[`${u.id}_${wkey}`]||[])].reverse();return html`
+            <div>
+              <div style="display:inline-block;color:#fff;font-size:15px;font-weight:800;padding:6px 18px;border-radius:20px;margin:16px 0 12px;background:${u.color};">${u.name}の気づき</div>
+              ${posts.length===0
+                ?html`<div style="font-size:16px;color:${P.grayM};text-align:center;padding:16px 0;">まだ投稿がありません</div>`
+                :posts.map((p,i)=>html`
+                  <div key=${i} class="card" style="border:2.5px solid ${u.color};margin-bottom:10px;">
+                    <div style="font-size:17px;color:${P.textDark};line-height:1.75;">${p.text}</div>
+                    <div style="font-size:13px;color:${P.grayM};margin-top:8px;">${fd(p.ts)}</div>
+                  </div>`)}
+            </div>`;} )}
+        </div>`}
+
+        <!-- MISSION -->
+        ${tab==="mission"&&html`<${MissionTab} me=${me} msn=${msn} mqi=${mqi} md=${md} setMqi=${sMqi} setMd=${sMd} saveMsn=${saveMsn} meU=${meU} pt=${pt}/>`}
+      </div>
+
+      <!-- UNLOCK POPUP -->
+      ${pop&&html`
+        <div class="overlay" onClick=${()=>sPop(null)}>
+          <div class="pop-box" onClick=${e=>e.stopPropagation()}>
+            <div class="pop-bar">習慣${pop}が解放！</div>
+            <div class="pop-body">
+              <div style="font-size:22px;font-weight:900;color:${P.navy};margin-bottom:8px;">${H.find(x=>x.id===pop)?.title}</div>
+              <div style="font-size:17px;color:${P.navy};line-height:1.7;margin-bottom:24px;">ふたりで次のステージへ進みましょう！</div>
+              <button onClick=${()=>{sPop(null);sAh(pop);sTab("today");}} style="width:100%;padding:14px;background:${P.navy};color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:900;">さっそく始める！</button>
+            </div>
+          </div>
+        </div>`}
+
+      <!-- TOAST -->
+      ${toast&&html`<div class="toast-el">${toast}</div>`}
+    </div>`;
+}
+
+// ── Mission tab component ─────────────────────────────────────────────────────
+function MissionTab({me,msn,mqi,md,setMqi,setMd,saveMsn,meU,pt}){
+  const um=msn[me]||{};
+  const answered=MQ.filter(q=>um[q.id]?.trim()).length;
+  const allDn=answered===MQ.length;
+  const curQ=MQ[mqi];
+  const saved=um[curQ?.id]||"";
+  const saveAns=()=>{
+    if(!md.trim())return;
+    const nx={...msn,[me]:{...um,[curQ.id]:md.trim()}};
+    saveMsn(nx);setMd("");
+    if(mqi<MQ.length-1)setMqi(mqi+1);
+  };
+  return html`<div>
+    <div style="font-size:26px;font-weight:900;color:${P.navy};margin-bottom:4px;">ミッションステートメント</div>
+    <div style="font-size:16px;color:${P.grayM};margin-bottom:18px;">完璧を目指さなくていい。今の自分の言葉で。</div>
+    <div style="background:${P.greenPale};border-radius:14px;padding:14px 16px;margin-bottom:18px;border-left:4px solid ${P.green};">
+      <div style="font-size:14px;font-weight:800;color:${P.green};margin-bottom:8px;">📝 いつ書く？</div>
+      <div style="font-size:15px;color:${P.navy};display:flex;flex-direction:column;gap:7px;">
+        <span>✅ 今すぐ問1〜2だけ書いてみよう</span>
+        <span>✅ 習慣1クリアで草案としてまとめる</span>
+        <span>✅ 習慣2に入ったら毎日読み返す</span>
+        <span style="color:${P.grayM};font-size:13px;">※完成させなくてOK。人生と一緒に育てていくものです。</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:15px;font-weight:700;color:${P.navy};">${meU.name}さんの進捗</span>
+        <span style="font-size:15px;font-weight:700;color:${P.green};">${answered} / ${MQ.length} 問</span>
+      </div>
+      <div class="msn-bar"><div class="msn-fill" style="width:${answered/MQ.length*100}%;"></div></div>
+      ${allDn&&html`<div style="margin-top:10px;font-size:15px;color:${P.green};font-weight:700;text-align:center;">草案が完成しました！いつでも編集できます。</div>`}
+    </div>
+    ${!allDn&&html`<div class="card" style="border:2px solid ${P.greenPale};">
+      <div style="display:flex;gap:5px;margin-bottom:16px;">
+        ${MQ.map((q,i)=>html`
+          <button onClick=${()=>{setMqi(i);setMd(um[q.id]||'');}} style="flex:1;height:6px;border-radius:3px;border:none;cursor:pointer;background:${um[q.id]?P.green:i===mqi?P.navy:P.grayL};"></button>`)}
+      </div>
+      <div style="font-size:12px;font-weight:800;color:${P.green};letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;">${curQ.sec}</div>
+      <div style="font-size:20px;font-weight:900;color:${P.navy};line-height:1.55;margin-bottom:10px;white-space:pre-line;">${curQ.q}</div>
+      <div style="font-size:14px;color:${P.grayM};line-height:1.7;margin-bottom:14px;padding:10px 12px;background:${P.off};border-radius:10px;">${curQ.hint}</div>
+      ${saved&&!md&&html`<div style="background:${P.greenPale};border-radius:12px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:12px;color:${P.green};font-weight:700;margin-bottom:6px;">保存済みの回答</div>
+        <div style="font-size:16px;color:${P.navy};line-height:1.7;">${saved}</div>
+        <button onClick=${()=>setMd(saved)} style="margin-top:10px;font-size:13px;font-weight:700;color:${P.green};background:transparent;border:1.5px solid ${P.green};border-radius:8px;padding:5px 14px;">編集する</button>
+      </div>`}
+      ${(!saved||md)&&html`<div>
+        <textarea value=${md} onInput=${e=>setMd(e.target.value)} placeholder=${curQ.ph} style="border:2px solid ${P.grayL};min-height:110px;"></textarea>
+        <div style="display:flex;gap:10px;margin-top:12px;">
+          ${mqi>0&&html`<button onClick=${()=>{setMqi(mqi-1);setMd(um[MQ[mqi-1].id]||'');}} style="padding:12px 18px;background:${P.off};color:${P.navy};border:2px solid ${P.grayL};border-radius:12px;font-size:16px;font-weight:700;">← 前へ</button>`}
+          <button onClick=${saveAns} style="flex:1;padding:13px;color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:900;background:${md.trim()?P.navy:P.locked};">
+            ${mqi<MQ.length-1?'保存して次へ →':'草案を完成させる'}
+          </button>
+        </div>
+      </div>`}
+    </div>`}
+    ${answered>0&&html`<div>
+      <div style="display:inline-block;color:#fff;font-size:15px;font-weight:800;padding:6px 18px;border-radius:20px;margin:4px 0 14px;background:${P.navy};">これまでの回答</div>
+      ${MQ.map(q=>{
+        const ans=um[q.id];
+        if(!ans)return null;
+        return html`<div class="card" style="border:2px solid ${P.greenPale};position:relative;margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:800;color:${P.green};letter-spacing:1px;margin-bottom:4px;">${q.sec}</div>
+          <div style="font-size:13px;color:${P.grayM};margin-bottom:8px;">${q.q.split('\n')[0]}</div>
+          <div style="font-size:17px;color:${P.navy};line-height:1.75;padding-right:44px;">${ans}</div>
+          <button onClick=${()=>{const idx=MQ.findIndex(x=>x.id===q.id);setMqi(idx);setMd(ans);}} style="position:absolute;top:14px;right:14px;font-size:12px;font-weight:700;color:${P.navy};background:${P.off};border:1.5px solid ${P.grayL};border-radius:8px;padding:4px 10px;">編集</button>
+        </div>`;})}
+    </div>`}
+    ${msn[pt.id]?.free&&html`<div>
+      <div style="display:inline-block;color:#fff;font-size:15px;font-weight:800;padding:6px 18px;border-radius:20px;margin:16px 0 14px;background:${pt.color};">${pt.name}さんのミッション草案</div>
+      <div class="card" style="border:2.5px solid ${pt.color};">
+        <div style="font-size:17px;color:${P.navy};line-height:1.8;">${msn[pt.id].free}</div>
+      </div>
+    </div>`}
+  </div>`;
+}
+
+render(html`<${App}/>`, document.getElementById('app'));
+</script>
+</body>
+</html>
